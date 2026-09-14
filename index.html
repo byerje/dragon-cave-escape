@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dragon Cave Escape</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Everything lives inside this one panel so it looks like a single "book page" -->
+  <main class="game-panel">
+
+    <!-- ===== Title ===== -->
+    <header class="title-bar">
+      <h1>Dragon Cave Escape</h1>
+      <p class="subtitle">A text adventure in three to ten minutes</p>
+    </header>
+
+    <!-- ===== Stats (filled in by JavaScript) ===== -->
+    <section class="stats" id="stats">
+      <span class="stat" id="stat-health">&#10084;&#65039; Health: 10</span>
+      <span class="stat" id="stat-gold">&#129689; Gold: 0</span>
+      <span class="stat stat-wide" id="stat-inventory">&#127890; Inventory: Torch</span>
+    </section>
+
+    <!-- ===== Story text (filled in by JavaScript) ===== -->
+    <section class="story" id="story"></section>
+
+    <!-- ===== Choice buttons (created by JavaScript) ===== -->
+    <section class="choices" id="choices"></section>
+
+    <!-- ===== Footer: best score + restart ===== -->
+    <footer class="footer">
+      <span id="best-score">Best gold: 0</span>
+      <button id="restart-button" class="restart-button">Play Again</button>
+    </footer>
+
+  </main>
+
+  <!-- Load the game logic last so the HTML above already exists -->
+  <script src="game.js"></script>
+</body>
+</html>
