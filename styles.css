@@ -90,6 +90,16 @@ body {
   flex: 1 1 100%;
 }
 
+/* --- Objective banner --- */
+.quest {
+  border-left: 3px solid var(--gold);
+  padding: 6px 12px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--gold-bright);
+}
+
 /* --- Story text --- */
 .story {
   background: var(--stone-dark);
@@ -177,4 +187,116 @@ body {
 
 .restart-button:hover {
   background: var(--gold-bright);
+}
+
+.footer-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.map-button {
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 8px 16px;
+  color: var(--parchment);
+  background: var(--stone-light);
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.map-button:hover {
+  background: #4a3b2b;
+}
+
+/* --- Map overlay --- */
+.map-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 10;
+}
+
+.map-overlay[hidden] {
+  display: none;
+}
+
+.map-panel {
+  width: 100%;
+  max-width: 480px;
+  background: var(--stone);
+  border: 2px solid var(--gold);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+}
+
+.map-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.map-header h2 {
+  margin: 0;
+  color: var(--gold-bright);
+}
+
+.map-close {
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--parchment);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.map-close:hover {
+  color: var(--gold-bright);
+}
+
+.map-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-areas:
+    "armory  .         ."
+    "left    entrance  right"
+    ".       .         river"
+    ".       .         dragon"
+    ".       .         exit";
+  gap: 8px;
+}
+
+.map-node {
+  border-radius: 6px;
+  padding: 10px 8px;
+  text-align: center;
+  font-size: 0.8rem;
+  border: 1px solid #4a3b2b;
+  background: var(--stone-dark);
+  opacity: 0.35;
+}
+
+.map-node.discovered {
+  opacity: 1;
+  background: var(--stone-light);
+}
+
+.map-node.current {
+  border-color: var(--gold-bright);
+  background: #4a3b2b;
+  box-shadow: 0 0 10px rgba(242, 198, 109, 0.6);
+  font-weight: bold;
+}
+
+.map-hint {
+  margin: 14px 0 0;
+  font-size: 0.75rem;
+  opacity: 0.65;
+  text-align: center;
 }

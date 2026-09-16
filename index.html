@@ -14,7 +14,7 @@
     <!-- ===== Title ===== -->
     <header class="title-bar">
       <h1>Dragon Cave Escape</h1>
-      <p class="subtitle">A text adventure in three to ten minutes</p>
+      <p class="subtitle">Kill the dragon. Or at least rob it.</p>
     </header>
 
     <!-- ===== Stats (filled in by JavaScript) ===== -->
@@ -24,21 +24,42 @@
       <span class="stat stat-wide" id="stat-inventory">&#127890; Inventory: Torch</span>
     </section>
 
+    <!-- ===== Current objective (filled in by JavaScript) ===== -->
+    <section class="quest" id="quest"></section>
+
     <!-- ===== Story text (filled in by JavaScript) ===== -->
     <section class="story" id="story"></section>
 
     <!-- ===== Choice buttons (created by JavaScript) ===== -->
     <section class="choices" id="choices"></section>
 
-    <!-- ===== Footer: best score + restart ===== -->
+    <!-- ===== Footer: best score + map + restart ===== -->
     <footer class="footer">
       <span id="best-score">Best gold: 0</span>
-      <button id="restart-button" class="restart-button">Play Again</button>
+      <span class="footer-buttons">
+        <button id="speech-button" class="map-button" title="Press R">Read Aloud: Off (R)</button>
+        <button id="map-button" class="map-button" title="Press M">Map (M)</button>
+        <button id="restart-button" class="restart-button">Play Again</button>
+      </span>
     </footer>
 
   </main>
 
+  <!-- ===== Map overlay (hidden until opened, filled in by JavaScript) ===== -->
+  <div class="map-overlay" id="map-overlay" hidden>
+    <div class="map-panel">
+      <div class="map-header">
+        <h2>Cave Map</h2>
+        <button id="map-close" class="map-close" title="Close (Esc)">&times;</button>
+      </div>
+      <div class="map-grid" id="map-grid"></div>
+      <p class="map-hint">Only rooms you have discovered are shown.</p>
+    </div>
+  </div>
+
   <!-- Load the game logic last so the HTML above already exists -->
   <script src="game.js"></script>
+  <!-- Auto-reloads the page on file changes when running locally; see dev-reload.js -->
+  <script src="dev-reload.js"></script>
 </body>
 </html>
