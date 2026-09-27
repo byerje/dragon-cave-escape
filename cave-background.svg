@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="torch" cx="50%" cy="58%" r="48%">
+      <stop offset="0" stop-color="#f4c15d" stop-opacity=".9"/>
+      <stop offset=".22" stop-color="#9a5527" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#160e0b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="rock" x2="0" y2="1">
+      <stop stop-color="#211716"/>
+      <stop offset="1" stop-color="#080707"/>
+    </linearGradient>
+    <linearGradient id="floor" x2="0" y2="1">
+      <stop stop-color="#1c1512"/>
+      <stop offset="1" stop-color="#050505"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#rock)"/>
+  <path d="M0 0h1600v190l-120 50-120-82-150 90-145-110-160 100-160-82-155 96-150-82-160 65L0 190z" fill="#090909"/>
+  <path d="M0 0h300l100 240-130 160-150-75L0 390zm1600 0h-300l-105 240 130 160 145-75 130 65z" fill="#0d0b0b"/>
+  <path d="M0 1000V630l190-80 180 92 170-65 180 70 160-76 180 70 170-88 190 77v370z" fill="url(#floor)"/>
+  <ellipse cx="800" cy="600" rx="620" ry="430" fill="url(#torch)"/>
+  <path d="M635 570c28-155 98-215 165-218 74-4 136 68 169 218l-66-52-35 68-60-62-57 62-38-67z" fill="#0a0909" opacity=".96"/>
+  <path d="M685 425l-72-108 120 58m170 50 75-112-123 65" fill="#0a0909"/>
+  <path d="M715 558l-150 54-102-39 145-62zm170 0 150 54 102-39-145-62z" fill="#0a0909"/>
+  <circle cx="755" cy="460" r="7" fill="#e4a63d"/><circle cx="845" cy="460" r="7" fill="#e4a63d"/>
+  <path d="M680 760q110-120 230 0 80-54 165 5-90 62-180 15-110 62-220-5-80 42-155-8 72-58 160-7z" fill="#b97725" opacity=".9"/>
+  <g fill="#f2c66d"><circle cx="625" cy="760" r="18"/><circle cx="700" cy="720" r="14"/><circle cx="910" cy="735" r="16"/><circle cx="1005" cy="780" r="20"/><circle cx="1080" cy="730" r="13"/></g>
+  <path d="M90 860l190-50 140 35 130-30 170 45 180-35 150 35 160-48 210 48v150H90z" fill="#050505" opacity=".7"/>
+</svg>

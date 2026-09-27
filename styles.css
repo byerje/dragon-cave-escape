@@ -26,9 +26,9 @@ body {
   min-height: 100vh;
   font-family: Georgia, "Times New Roman", serif;
   color: var(--parchment);
-  /* A soft glow in the middle makes it feel like torchlight in a cave */
   background:
-    radial-gradient(circle at 50% 20%, #3a2c1e 0%, var(--stone-dark) 65%),
+    linear-gradient(rgba(12, 9, 8, 0.68), rgba(12, 9, 8, 0.78)),
+    url("cave-background.svg") center / cover fixed,
     var(--stone-dark);
   display: flex;
   justify-content: center;
