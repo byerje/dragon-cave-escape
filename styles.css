@@ -28,7 +28,7 @@ body {
   color: var(--parchment);
   background:
     linear-gradient(rgba(12, 9, 8, 0.28), rgba(12, 9, 8, 0.38)),
-    url("caver.bmp") center / cover fixed,
+    url("cave-adventure-background.svg") center / cover fixed,
     var(--stone-dark);
   display: flex;
   justify-content: center;
