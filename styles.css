@@ -27,8 +27,8 @@ body {
   font-family: Georgia, "Times New Roman", serif;
   color: var(--parchment);
   background:
-    linear-gradient(rgba(12, 9, 8, 0.68), rgba(12, 9, 8, 0.78)),
-    url("cave-background.svg") center / cover fixed,
+    linear-gradient(rgba(12, 9, 8, 0.28), rgba(12, 9, 8, 0.38)),
+    url("caver.bmp") center / cover fixed,
     var(--stone-dark);
   display: flex;
   justify-content: center;
