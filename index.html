@@ -61,7 +61,8 @@
     </div>
   </div>
 
-  <!-- Load the game logic last so the HTML above already exists -->
+  <!-- Narrative content loads before game logic so the renderer can use it. -->
+  <script src="story-content.js"></script>
   <script src="game.js"></script>
   <!-- Auto-reloads the page on file changes when running locally; see dev-reload.js -->
   <script src="dev-reload.js"></script>

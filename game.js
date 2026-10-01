@@ -194,10 +194,10 @@ const rooms = {
     text: function () {
       return [
         "Three nights ago the dragon Vharoth came down on the village of Ashmere.",
-        "It did not eat anyone. It did something worse: it took the winter stores - every coin the village had saved to buy grain - and dragged them up the mountain. Without that gold, Ashmere starves before spring.",
-        "The village had one old sword, kept above the hearth. The blacksmith carried it up the mountain first. He did not come back.",
-        "So you went. You climbed the scree, crawled into the dragon's cave, and something struck you from behind in the dark.",
-        "Now you are awake, and there are only two ways to end this: leave with the gold, or leave with the dragon dead."
+        "Vharoth did not eat anyone, but he did something worse: he took the Village's winter stores - the chest containing every coin the village had saved to buy grain - and dragged them up the mountain. Without that gold, Ashmere will starve before spring.",
+        "The village had one old sword, kept above the hearth at City Hall. The blacksmith carried it up the mountain in search of Vharoth. But, sadly, he never returned.",
+        "So you went up the mountain to the cave opening. As you entered the dragon's cave, something struck you from behind in the dark rendering you unconscious.",
+        "Now you are awake, dazed, and confused about what to do next. If you don't die, then there are only two possible ways to end this: leave with the gold, or leave with the dragon dead."
       ];
     },
     choices: function () {
@@ -211,8 +211,8 @@ const rooms = {
   entrance: {
     text: function () {
       return [
-        "You wake up on cold stone at the mouth of a cave. Your head aches and your pack is gone - all but a single torch.",
-        "A distant roar echoes through the tunnel. Vharoth is somewhere below you, sleeping on Ashmere's gold.",
+        "You are awake and alive. You stand up from the cold stone flooring at the mouth of the cave and the entrance is blocked. Your head aches and your pack is gone with all your provisions - all except a single torch.",
+        "A distant roar echoes through the tunnel. Vharoth is somewhere below you, sleeping with Ashmere's gold.",
         state.torchLit
           ? "Your torch burns steadily, pushing the shadows back."
           : "Two passages lead into the dark: one left, one right."
@@ -300,7 +300,7 @@ const rooms = {
         "The stone slab grinds aside, revealing an abandoned armory.",
         has("Sword")
           ? "The pedestal at the centre of the room stands empty."
-          : "The blacksmith of Ashmere lies against the pedestal, long past helping. The old sword is still in his hand, unbloodied - he never got close enough to swing it."
+          : "The blacksmith of Ashmere lies against the pedestal, dead and unable to help you in anyway. The old sword is still in his hand, unbloodied - he never even got close enough to use it."
       ];
     },
     choices: function () {
@@ -312,7 +312,7 @@ const rooms = {
           action: function () {
             addItem("Sword");
             playSound("sword");
-            say("The blade is lighter than it looks. You promise the blacksmith you will use it better than he could.", "msg-good");
+            say("The blade is lighter than it looks. You promise the blacksmith you will put it to good use; better than he did.", "msg-good");
             stay();
           }
         });
@@ -382,10 +382,10 @@ const rooms = {
     text: function () {
       if (state.dragonSlain) {
         return [
-          "The dragon lies still upon its ruined hoard. Gold glitters in every direction.",
+          "The dragon lies still upon its tainted plunder. Gold glitters in every direction.",
           state.stoleGold
-            ? "Ashmere's coin chests are already stacked at your feet."
-            : "Ashmere's coin chests still sit near the top of the pile, ready for the taking.",
+            ? "Ashmere's gold coins chest is already stacked at your feet."
+            : "Ashmere's gold coins chest still sits near the top of the pile, ready for the taking.",
           "A tunnel on the far side leads toward daylight."
         ];
       }
@@ -397,7 +397,7 @@ const rooms = {
       }
       return [
         "A giant sleeping dragon lies on a mountain of gold. Each breath rattles the stones.",
-        "Ashmere's coin chests sit near the top of the pile, their lids torn off.",
+        "Ashmere's gold coins chest sits near the top of the pile, its lid torn off.",
         "A tunnel on the far side leads toward daylight."
       ];
     },
@@ -530,7 +530,7 @@ function endGame(kind) {
 
   if (kind === "burned") {
     endingTitle = "Burned";
-    endingLines = ["The dragon's flames consume you. Ashmere waits for a rescuer who never comes down the mountain."];
+    endingLines = ["The dragon's flames consume you. Ashmere waits for a rescuer who never returns down the mountain."];
   } else if (kind === "eaten") {
     endingTitle = "Eaten";
     endingLines = ["The dragon devours you in a single, unhurried motion, then goes back to sleep on your village's gold."];
@@ -548,25 +548,25 @@ function endGame(kind) {
       endingTitle = "Dragon Slayer";
       endingLines = [
         "Vharoth is dead, and Ashmere's gold is safe in your pack. The village eats, and the mountain is quiet at last.",
-        "You hand the old sword back to the blacksmith's widow."
+        "You hand the old sword back to the mayor to hang back in the town hall."
       ];
     } else if (state.dragonSlain) {
       endingTitle = "Hollow Victory";
       endingLines = [
         "Vharoth is dead, but you left its gold buried under the corpse. Ashmere still needs " + (RANSOM - state.gold) + " more gold before the snow comes.",
-        "You hand the old sword back to the blacksmith's widow. It does not fill the village's grain stores."
+        "You hand the old sword back to the mayor. Recovering it, however, does not fill the village's grain stores."
       ];
     } else if (state.gold >= RANSOM) {
       endingTitle = "Master Treasure Hunter";
       endingLines = [
-        "You carry " + state.gold + " gold down the scree. Ashmere will buy grain and survive the winter.",
-        "But Vharoth still lives, and on still nights the whole village watches the mountain."
+        "You carry " + state.gold + " gold down the mountainside. Ashmere will buy grain and survive the winter.",
+        "But Vharoth still lives, and on quiet, dark nights the whole village watches the fiery mountain."
       ];
     } else {
       endingTitle = "Empty Hands";
       endingLines = [
         "You escaped the Dragon Cave with your life, and nothing else.",
-        "Ashmere needed " + RANSOM + " gold. You brought back " + state.gold + ". Nobody blames you out loud."
+        "Ashmere needed " + RANSOM + " gold. You brought back " + state.gold + ". Nobody blames you, out loud."
       ];
     }
     endingLines.push("Health remaining: " + state.health);
@@ -679,6 +679,9 @@ function render() {
     let lines = room.text();
     if (!Array.isArray(lines)) lines = [lines];
     lines.forEach(function (line) {
+      storyEl.appendChild(makeParagraph(line));
+    });
+    additionalStory(state.currentRoom).forEach(function (line) {
       storyEl.appendChild(makeParagraph(line));
     });
   }
