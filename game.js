@@ -809,9 +809,11 @@ function voiceKey(voice) {
 }
 
 function availableEnglishVoices() {
-  return window.speechSynthesis.getVoices().filter(function (voice) {
+  const voices = window.speechSynthesis.getVoices();
+  const englishVoices = voices.filter(function (voice) {
     return /^en(-|_)/i.test(voice.lang);
   });
+  return englishVoices.length > 0 ? englishVoices : voices;
 }
 
 function populateVoiceSelect() {
@@ -828,6 +830,15 @@ function populateVoiceSelect() {
   });
 
   voiceSelect.replaceChildren();
+  if (voices.length === 0) {
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.textContent = "Browser default voice";
+    voiceSelect.appendChild(defaultOption);
+    voiceSelect.disabled = false;
+    return;
+  }
+
   voices.forEach(function (voice) {
     const option = document.createElement("option");
     option.value = voiceKey(voice);
@@ -835,11 +846,6 @@ function populateVoiceSelect() {
     option.selected = option.value === savedVoiceKey();
     voiceSelect.appendChild(option);
   });
-
-  if (voices.length === 0) {
-    voiceSelect.disabled = true;
-    return;
-  }
 
   voiceSelect.disabled = false;
   if (!voices.some(function (voice) {
@@ -943,11 +949,14 @@ voiceSelect.addEventListener("change", function () {
   if (speechEnabled) speakStory();
 });
 updateSpeechButtonLabel();
-populateVoiceSelect();
 
 if (speechSupported()) {
   window.speechSynthesis.addEventListener("voiceschanged", function () {
     populateVoiceSelect();
     if (speechEnabled) speakStory();
   });
+  populateVoiceSelect();
+  window.setTimeout(populateVoiceSelect, 250);
+} else {
+  populateVoiceSelect();
 }
