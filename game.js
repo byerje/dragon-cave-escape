@@ -29,6 +29,7 @@ const mapOverlay  = document.getElementById("map-overlay");
 const mapGridEl   = document.getElementById("map-grid");
 const mapCloseBtn = document.getElementById("map-close");
 const speechButton = document.getElementById("speech-button");
+const voiceSelect = document.getElementById("voice-select");
 
 // Whether the story text should be read aloud. Declared early because
 // startGame() below runs render() immediately, which checks this flag.
@@ -799,8 +800,61 @@ function speechSupported() {
   return "speechSynthesis" in window;
 }
 
+function savedVoiceKey() {
+  return localStorage.getItem("dragonCaveVoice");
+}
+
+function voiceKey(voice) {
+  return voice.voiceURI + "|" + voice.name + "|" + voice.lang;
+}
+
+function availableEnglishVoices() {
+  return window.speechSynthesis.getVoices().filter(function (voice) {
+    return /^en(-|_)/i.test(voice.lang);
+  });
+}
+
+function populateVoiceSelect() {
+  if (!speechSupported()) {
+    voiceSelect.disabled = true;
+    return;
+  }
+
+  const voices = availableEnglishVoices().sort(function (first, second) {
+    const firstUk = /^en(-|_)GB/i.test(first.lang);
+    const secondUk = /^en(-|_)GB/i.test(second.lang);
+    if (firstUk !== secondUk) return firstUk ? -1 : 1;
+    return first.name.localeCompare(second.name);
+  });
+
+  voiceSelect.replaceChildren();
+  voices.forEach(function (voice) {
+    const option = document.createElement("option");
+    option.value = voiceKey(voice);
+    option.textContent = voice.name + " (" + voice.lang + ")";
+    option.selected = option.value === savedVoiceKey();
+    voiceSelect.appendChild(option);
+  });
+
+  if (voices.length === 0) {
+    voiceSelect.disabled = true;
+    return;
+  }
+
+  voiceSelect.disabled = false;
+  if (!voices.some(function (voice) {
+    return voiceKey(voice) === savedVoiceKey();
+  })) {
+    voiceSelect.value = voiceKey(storyVoice());
+  }
+}
+
 function storyVoice() {
   const voices = window.speechSynthesis.getVoices();
+  const savedVoice = voices.find(function (voice) {
+    return voiceKey(voice) === localStorage.getItem("dragonCaveVoice");
+  });
+  if (savedVoice) return savedVoice;
   const preferredNames = [
     "Google UK English Female",
     "Microsoft George Online",
@@ -884,10 +938,16 @@ function speakStory() {
 }
 
 speechButton.addEventListener("click", toggleSpeech);
+voiceSelect.addEventListener("change", function () {
+  localStorage.setItem("dragonCaveVoice", voiceSelect.value);
+  if (speechEnabled) speakStory();
+});
 updateSpeechButtonLabel();
+populateVoiceSelect();
 
 if (speechSupported()) {
   window.speechSynthesis.addEventListener("voiceschanged", function () {
+    populateVoiceSelect();
     if (speechEnabled) speakStory();
   });
 }

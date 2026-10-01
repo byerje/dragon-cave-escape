@@ -191,7 +191,31 @@ body {
 
 .footer-buttons {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
+}
+
+.voice-choice {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.voice-choice select {
+  max-width: 175px;
+  padding: 7px 8px;
+  color: var(--parchment);
+  background: var(--stone-light);
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  font: inherit;
+}
+
+.voice-choice select:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .map-button {
