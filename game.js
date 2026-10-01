@@ -855,6 +855,12 @@ function populateVoiceSelect() {
   }
 }
 
+function refreshVoiceSelect() {
+  if (!speechSupported()) return;
+  window.speechSynthesis.getVoices();
+  populateVoiceSelect();
+}
+
 function storyVoice() {
   const voices = window.speechSynthesis.getVoices();
   const savedVoice = voices.find(function (voice) {
@@ -948,6 +954,9 @@ voiceSelect.addEventListener("change", function () {
   localStorage.setItem("dragonCaveVoice", voiceSelect.value);
   if (speechEnabled) speakStory();
 });
+voiceSelect.addEventListener("pointerdown", refreshVoiceSelect);
+voiceSelect.addEventListener("focus", refreshVoiceSelect);
+voiceSelect.addEventListener("click", refreshVoiceSelect);
 updateSpeechButtonLabel();
 
 if (speechSupported()) {
