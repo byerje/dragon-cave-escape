@@ -816,6 +816,14 @@ function availableEnglishVoices() {
   return englishVoices.length > 0 ? englishVoices : voices;
 }
 
+function voiceLabel(voice) {
+  const shortName = voice.name
+    .replace(/^Microsoft\s+/i, "")
+    .replace(/\s+\(Natural\)/i, "")
+    .replace(/\s+-\s+English.*$/i, "");
+  return shortName + " (" + voice.lang + ")";
+}
+
 function populateVoiceSelect() {
   if (!speechSupported()) {
     voiceSelect.disabled = true;
@@ -842,7 +850,8 @@ function populateVoiceSelect() {
   voices.forEach(function (voice) {
     const option = document.createElement("option");
     option.value = voiceKey(voice);
-    option.textContent = voice.name + " (" + voice.lang + ")";
+    option.textContent = voiceLabel(voice);
+    option.title = voice.name + " (" + voice.lang + ")";
     option.selected = option.value === savedVoiceKey();
     voiceSelect.appendChild(option);
   });

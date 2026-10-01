@@ -191,7 +191,7 @@ body {
 
 .footer-buttons {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 8px;
 }
@@ -200,17 +200,22 @@ body {
   display: flex;
   align-items: center;
   gap: 5px;
+  min-width: 0;
   white-space: nowrap;
 }
 
 .voice-choice select {
-  max-width: 175px;
+  width: 175px;
+  min-width: 0;
+  overflow: hidden;
   padding: 7px 8px;
   color: var(--parchment);
   background: var(--stone-light);
   border: 1px solid var(--gold);
   border-radius: 6px;
   font: inherit;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .voice-choice select:disabled {
@@ -261,7 +266,7 @@ body {
 
   .voice-choice select {
     flex: 1;
-    min-width: 0;
+    width: auto;
     max-width: none;
   }
 
