@@ -710,7 +710,21 @@ function choicePrompt(roomId) {
     "Choose your next step carefully.",
     "Make a choice to continue your adventure.",
     "The story is in your hands now. What will you choose?",
-    "A new turn in the adventure awaits."
+    "A new turn in the adventure awaits.",
+    "The torch flickers across several possible paths.",
+    "The cave holds its breath. Which way will you go?",
+    "Your next decision could change everything.",
+    "Adventure waits just beyond your next choice.",
+    "The shadows shift, revealing new possibilities.",
+    "Trust your instincts and choose your way forward.",
+    "Every path has a story. Which one will you follow?",
+    "The quiet of the cave invites your next move.",
+    "A brave explorer must decide what comes next.",
+    "The way ahead is uncertain, but your choices are clear.",
+    "Something stirs in the darkness. How will you respond?",
+    "The cave has more secrets to reveal.",
+    "Your journey continues with the choice before you.",
+    "Look closely, think boldly, and choose your next step."
   ];
 
   if (roomId === "prologue") return prompts[0];
