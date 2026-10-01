@@ -799,6 +799,28 @@ function speechSupported() {
   return "speechSynthesis" in window;
 }
 
+function storyVoice() {
+  const voices = window.speechSynthesis.getVoices();
+  const preferredNames = [
+    "Samantha",
+    "Microsoft Jenny Online",
+    "Microsoft Aria Online",
+    "Google UK English Female",
+    "Google US English"
+  ];
+
+  for (const name of preferredNames) {
+    const voice = voices.find(function (candidate) {
+      return candidate.name.includes(name) && /^en(-|_)/i.test(candidate.lang);
+    });
+    if (voice) return voice;
+  }
+
+  return voices.find(function (voice) {
+    return /^en(-|_)/i.test(voice.lang);
+  });
+}
+
 function updateSpeechButtonLabel() {
   if (!speechSupported()) {
     speechButton.textContent = "Read Aloud: Unsupported";
@@ -830,10 +852,22 @@ function speakStory() {
   const text = storyEl.textContent.trim();
   if (!text) return;
 
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.rate = 0.95;
+  const utterance = new SpeechSynthesisUtterance(
+    text.replace(/([.!?])\s+/g, "$1 ... ")
+  );
+  const voice = storyVoice();
+  if (voice) utterance.voice = voice;
+  utterance.rate = 0.86;
+  utterance.pitch = 1.08;
+  utterance.volume = 0.95;
   window.speechSynthesis.speak(utterance);
 }
 
 speechButton.addEventListener("click", toggleSpeech);
 updateSpeechButtonLabel();
+
+if (speechSupported()) {
+  window.speechSynthesis.addEventListener("voiceschanged", function () {
+    if (speechEnabled) speakStory();
+  });
+}
