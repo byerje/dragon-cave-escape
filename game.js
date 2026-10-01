@@ -984,18 +984,29 @@ function toggleSpeech() {
   }
 }
 
+function speechText() {
+  return Array.from(storyEl.querySelectorAll("p"))
+    .map(function (paragraph) {
+      return paragraph.textContent
+        .replace(/[.!?]+/g, " ")
+        .replace(/[,:;()[\]{}"“”]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    })
+    .filter(Boolean)
+    .join("\n");
+}
+
 // Reads whatever is currently displayed in the story panel.
 function speakStory() {
   if (!speechEnabled || !speechSupported()) return;
 
   window.speechSynthesis.cancel();
 
-  const text = storyEl.textContent.trim();
+  const text = speechText();
   if (!text) return;
 
-  const utterance = new SpeechSynthesisUtterance(
-    text.replace(/([.!?])\s+/g, "$1 ... ")
-  );
+  const utterance = new SpeechSynthesisUtterance(text);
   const voice = storyVoice();
   if (voice) utterance.voice = voice;
   utterance.rate = 0.86;
