@@ -802,22 +802,42 @@ function speechSupported() {
 function storyVoice() {
   const voices = window.speechSynthesis.getVoices();
   const preferredNames = [
-    "Samantha",
+    "Google UK English Female",
+    "Microsoft George Online",
+    "Microsoft Sonia Online",
+    "Microsoft Hazel",
+    "Microsoft Libby Online",
+    "Microsoft Ryan Online",
     "Microsoft Jenny Online",
     "Microsoft Aria Online",
-    "Google UK English Female",
+    "Samantha",
     "Google US English"
   ];
+  const isEnglish = function (voice) {
+    return /^en(-|_)/i.test(voice.lang);
+  };
+  const isUkEnglish = function (voice) {
+    return /^en(-|_)GB/i.test(voice.lang);
+  };
+  const findPreferred = function (availableVoices) {
+    for (const name of preferredNames) {
+      const voice = availableVoices.find(function (candidate) {
+        return candidate.name.includes(name);
+      });
+      if (voice) return voice;
+    }
+  };
+  const ukVoices = voices.filter(isUkEnglish);
+  const preferredUkVoice = findPreferred(ukVoices);
 
-  for (const name of preferredNames) {
-    const voice = voices.find(function (candidate) {
-      return candidate.name.includes(name) && /^en(-|_)/i.test(candidate.lang);
-    });
-    if (voice) return voice;
-  }
+  if (preferredUkVoice) return preferredUkVoice;
+  if (ukVoices.length > 0) return ukVoices[0];
+
+  const preferredVoice = findPreferred(voices.filter(isEnglish));
+  if (preferredVoice) return preferredVoice;
 
   return voices.find(function (voice) {
-    return /^en(-|_)/i.test(voice.lang);
+    return isEnglish(voice);
   });
 }
 
