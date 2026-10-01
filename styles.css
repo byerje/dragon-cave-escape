@@ -233,6 +233,49 @@ body {
   background: #4a3b2b;
 }
 
+@media (max-width: 600px) {
+  .game-panel {
+    padding: 18px 14px;
+  }
+
+  .footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  #best-score {
+    text-align: center;
+  }
+
+  .footer-buttons {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .voice-choice {
+    grid-column: 1 / -1;
+    justify-content: space-between;
+  }
+
+  .voice-choice select {
+    flex: 1;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .footer-buttons button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 360px) {
+  .footer-buttons {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* --- Map overlay --- */
 .map-overlay {
   position: fixed;
