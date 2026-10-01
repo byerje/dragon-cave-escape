@@ -658,6 +658,10 @@ function render() {
   // --- Story ---
   storyEl.innerHTML = "";
 
+  const availableChoices = state.gameOver
+    ? [{ label: "Play Again", action: startGame }]
+    : rooms[state.currentRoom].choices();
+
   // Queued event messages first...
   messages.forEach(function (msg) {
     storyEl.appendChild(makeParagraph(msg.text, msg.type));
@@ -679,19 +683,44 @@ function render() {
     });
   }
 
+  if (availableChoices.length > 0) {
+    storyEl.appendChild(makeParagraph(choicePrompt(state.currentRoom)));
+    storyEl.appendChild(makeParagraph(
+      "Your options are: " + availableChoices.map(function (choice) {
+        return choice.label;
+      }).join(", ") + "."
+    ));
+  }
+
   // --- Choices ---
   choicesEl.innerHTML = "";
 
-  if (state.gameOver) {
-    addChoiceButton("Play Again", startGame);
-  } else {
-    rooms[state.currentRoom].choices().forEach(function (choice) {
-      addChoiceButton(choice.label, choice.action);
-    });
-  }
+  availableChoices.forEach(function (choice) {
+    addChoiceButton(choice.label, choice.action);
+  });
 
   // Read the freshly rendered story text aloud, if the player asked for it.
   speakStory();
+}
+
+function choicePrompt(roomId) {
+  const prompts = [
+    "The path ahead is yours to shape. What do you want to do?",
+    "The cave falls quiet, waiting for your next move.",
+    "Choose your next step carefully.",
+    "Make a choice to continue your adventure.",
+    "The story is in your hands now. What will you choose?",
+    "A new turn in the adventure awaits."
+  ];
+
+  if (roomId === "prologue") return prompts[0];
+  if (roomId === "ending") return prompts[4];
+
+  let hash = 0;
+  for (let index = 0; index < roomId.length; index += 1) {
+    hash += roomId.charCodeAt(index);
+  }
+  return prompts[hash % prompts.length];
 }
 
 // Creates a <p> element with optional CSS class.
