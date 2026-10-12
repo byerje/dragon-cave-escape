@@ -53,6 +53,9 @@ function newGame() {
     stoleGold: false,       // true if you looted the hoard
     armor: [],              // each piece soaks 1 point of damage
     currentRoom: "prologue",
+    skeletonSearched: false,
+    spareTorchTaken: false,
+    looseCoinTaken: false,
     visited: {},            // rooms already seen (so text can change)
     gameOver: false
   };
@@ -174,17 +177,17 @@ const RANSOM = 20;
 function currentObjective() {
   if (state.dragonSlain) {
     if (state.gold >= RANSOM) {
-      return "Objective: Vharoth is dead and the gold is secure. Head for the light.";
+      return "Objective: Cindermawl is dead and the gold is secure. Head for the light.";
     }
-    return "Objective: Vharoth is dead, but Ashmere's gold still lies under the hoard. Take it before you leave.";
+    return "Objective: Cindermawl is dead, but Ashmere's gold still lies under the hoard. Take it before you leave.";
   }
   if (state.gold >= RANSOM) {
     return "Objective: You have the village's winter gold. Kill the dragon, or run for the light.";
   }
   if (has("Sword")) {
-    return "Objective: You hold Ashmere's old blade. Slay Vharoth, or take back " + RANSOM + " gold.";
+    return "Objective: You hold Ashmere's old blade. Slay Cindermawl, or take back " + RANSOM + " gold.";
   }
-  return "Objective: Slay the dragon Vharoth, or recover at least " + RANSOM + " gold for Ashmere.";
+  return "Objective: Slay the dragon Cindermawl, or recover at least " + RANSOM + " gold for Ashmere.";
 }
 
 const rooms = {
@@ -193,16 +196,17 @@ const rooms = {
   prologue: {
     text: function () {
       return [
-        "Three nights ago the dragon Vharoth came down on the village of Ashmere.",
-        "Vharoth did not eat anyone, but he did something worse: he took the Village's winter stores - the chest containing every coin the village had saved to buy grain - and dragged them up the mountain. Without that gold, Ashmere will starve before spring.",
-        "The village had one old sword, kept above the hearth at City Hall. The blacksmith carried it up the mountain in search of Vharoth. But, sadly, he never returned.",
+        "Three nights ago the dragon Cindermawl came down on the village of Ashmere.",
+        "Cindermawl did not eat anyone, but he did something worse: he took the Village's winter stores - the chest containing every coin the village had saved to buy grain - and dragged them up the mountain. Without that gold, Ashmere will starve before spring.",
+        "The village had one old sword, kept above the hearth at City Hall. The blacksmith carried it up the mountain in search of Cindermawl. But, sadly, he never returned.",
         "So you went up the mountain to the cave opening. As you entered the dragon's cave, something struck you from behind in the dark rendering you unconscious.",
         "Now you are awake, dazed, and confused about what to do next. If you don't die, then there are only two possible ways to end this: leave with the gold, or leave with the dragon dead."
       ];
     },
     choices: function () {
       return [
-        { label: "Open your eyes", action: function () { goTo("entrance"); } }
+        { label: "Open your eyes and start your adventure", action: function () { goTo("entrance"); } },
+        { label: "Pretend to be dead and avoid the whole mess", action: function () { endGame("gaveUp"); } }
       ];
     }
   },
@@ -212,7 +216,7 @@ const rooms = {
     text: function () {
       return [
         "You are awake and alive. You stand up from the cold stone flooring at the mouth of the cave and the entrance is blocked. Your head aches and your pack is gone with all your provisions - all except a single torch.",
-        "A distant roar echoes through the tunnel. Vharoth is somewhere below you, sleeping with Ashmere's gold.",
+        "A distant roar echoes through the tunnel. Cindermawl is somewhere below you, sleeping with Ashmere's gold.",
         state.torchLit
           ? "Your torch burns steadily, pushing the shadows back."
           : "Two passages lead into the dark: one left, one right."
@@ -288,7 +292,68 @@ const rooms = {
         });
       }
 
+      list.push({ label: "Follow a narrow side corridor", action: function () { goTo("echoCorridor"); } });
       list.push({ label: "Return to the entrance", action: function () { goTo("entrance"); } });
+      return list;
+    }
+  },
+
+  /* ---------- ECHO CORRIDOR ---------- */
+  echoCorridor: {
+    text: function () {
+      return [
+        "The side corridor twists between close stone walls. Your footsteps return as thin, delayed echoes.",
+        "Ahead, the passage pinches shut. A smaller opening leads toward a dark alcove."
+      ];
+    },
+    choices: function () {
+      return [
+        { label: "Investigate the blocked end", action: function () { goTo("stoneDeadEnd"); } },
+        { label: "Enter the dark alcove", action: function () { goTo("skeletonAlcove"); } },
+        { label: "Return to the left tunnel", action: function () { goTo("leftTunnel"); } }
+      ];
+    }
+  },
+
+  /* ---------- EMPTY DEAD END ---------- */
+  stoneDeadEnd: {
+    text: function () {
+      return [
+        "Three solid walls meet around you. The fourth is the corridor you came through.",
+        "There is nothing here but cold rock and the sound of your own breathing."
+      ];
+    },
+    choices: function () {
+      return [
+        { label: "Turn around and leave", action: function () { goTo("echoCorridor"); } }
+      ];
+    }
+  },
+
+  /* ---------- SKELETON ALCOVE ---------- */
+  skeletonAlcove: {
+    text: function () {
+      return [
+        "A dead explorer slumps beneath a low shelf of stone, the body is decayed, only bones remain. You see a curled scrap of paper near the skeleton's hand.",
+        state.skeletonSearched
+          ? "The skeleton's empty hand rests on the floor."
+          : "One bony hand still closes around the note."
+      ];
+    },
+    choices: function () {
+      const list = [];
+      if (!state.skeletonSearched) {
+        list.push({
+          label: "Read the note and search the pockets",
+          action: function () {
+            state.skeletonSearched = true;
+            addGold(3);
+            say("The note reads: 'Light reveals the old armory. Do not wake the beast for loose change.'", "msg-good");
+            stay();
+          }
+        });
+      }
+      list.push({ label: "Leave the alcove", action: function () { goTo("echoCorridor"); } });
       return list;
     }
   },
@@ -334,8 +399,37 @@ const rooms = {
     choices: function () {
       return [
         { label: "Follow the water", action: function () { goTo("river"); } },
+        { label: "Squeeze through a low side passage", action: function () { goTo("lowPassage"); } },
         { label: "Return to the entrance", action: function () { goTo("entrance"); } }
       ];
+    }
+  },
+
+  /* ---------- LOW PASSAGE ---------- */
+  lowPassage: {
+    text: function () {
+      return [
+        "You crawl through a low, muddy passage until it opens into a forgotten supply niche.",
+        state.spareTorchTaken
+          ? "Only a few wet scraps of cloth remain in the niche."
+          : "A dry spare torch rests in a cracked clay jar, left by someone who never returned for it."
+      ];
+    },
+    choices: function () {
+      const list = [];
+      if (!state.spareTorchTaken) {
+        list.push({
+          label: "Take the spare torch",
+          action: function () {
+            state.spareTorchTaken = true;
+            addItem("Spare Torch");
+            say("You tuck the spare torch into your pack. It may save you if your light fails.", "msg-good");
+            stay();
+          }
+        });
+      }
+      list.push({ label: "Crawl back to the main passage", action: function () { goTo("rightTunnel"); } });
+      return list;
     }
   },
 
@@ -372,8 +466,36 @@ const rooms = {
             goTo("escapeExit");
           }
         },
+        { label: "Explore a dry corridor beside the river", action: function () { goTo("riverDeadEnd"); } },
         { label: "Go back up the passage", action: function () { goTo("rightTunnel"); } }
       ];
+    }
+  },
+
+  /* ---------- RIVER DEAD END ---------- */
+  riverDeadEnd: {
+    text: function () {
+      return [
+        "The dry corridor ends at a collapsed wall. Three sides are solid stone, while the river passage waits behind you.",
+        state.looseCoinTaken
+          ? "The muddy floor holds nothing more than your footprints."
+          : "A glint in the mud marks a single coin dropped by an unlucky traveler."
+      ];
+    },
+    choices: function () {
+      const list = [];
+      if (!state.looseCoinTaken) {
+        list.push({
+          label: "Pick up the coin",
+          action: function () {
+            state.looseCoinTaken = true;
+            addGold(1);
+            stay();
+          }
+        });
+      }
+      list.push({ label: "Turn around and leave", action: function () { goTo("river"); } });
+      return list;
     }
   },
 
@@ -411,7 +533,7 @@ const rooms = {
             action: function () {
               addGold(20);
               state.stoleGold = true;
-              say("With Vharoth dead, you take your time counting out every last coin.", "msg-good");
+              say("With Cindermawl dead, you take your time counting out every last coin.", "msg-good");
               stay();
             }
           });
@@ -486,11 +608,11 @@ const rooms = {
 
       // The exit is only a full victory if the dragon is dead AND the gold is secured.
       if (state.dragonSlain && state.gold >= RANSOM) {
-        lines.push("Vharoth will never come down that mountain again, and Ashmere's gold is on your back. You are done here.");
+        lines.push("Cindermawl will never come down that mountain again, and Ashmere's gold is on your back. You are done here.");
       } else if (state.dragonSlain) {
-        lines.push("Vharoth is dead, but Ashmere's gold is still buried under its corpse. Leave now and the village still starves.");
+        lines.push("Cindermawl is dead, but Ashmere's gold is still buried under its corpse. Leave now and the village still starves.");
       } else if (state.gold >= RANSOM) {
-        lines.push("The gold is heavy in your arms - enough to feed the village. But Vharoth still breathes, and it knows the way back to Ashmere.");
+        lines.push("The gold is heavy in your arms - enough to feed the village. But Cindermawl still breathes, and it knows the way back to Ashmere.");
       } else {
         lines.push("You have " + state.gold + " gold. Ashmere needs " + RANSOM + ". Walk out now and you walk home to a starving village.");
       }
@@ -534,6 +656,9 @@ function endGame(kind) {
   } else if (kind === "eaten") {
     endingTitle = "Eaten";
     endingLines = ["The dragon devours you in a single, unhurried motion, then goes back to sleep on your village's gold."];
+  } else if (kind === "gaveUp") {
+    endingTitle = "Coward's Rest";
+    endingLines = ["You lie still until the cold seeps through your bones. In the shadow of the mountain, Ashmere waits for a rescuer who will never return."];
   } else {
     // The player escaped - now work out WHICH escape this was.
     // Order matters: the rarest ending is checked first.
@@ -541,26 +666,26 @@ function endGame(kind) {
     if (state.dragonSlain && state.gold >= RANSOM && state.stoleGold) {
       endingTitle = "King of Dragons";
       endingLines = [
-        "You walk into Ashmere with the winter gold on your back and Vharoth's blood on the blacksmith's blade.",
+        "You walk into Ashmere with the winter gold on your back and Cindermawl's blood on the blacksmith's blade.",
         "The village eats. The mountain is quiet. They will sing about this for a hundred years, and none of it will be exaggerated."
       ];
     } else if (state.dragonSlain && state.gold >= RANSOM) {
       endingTitle = "Dragon Slayer";
       endingLines = [
-        "Vharoth is dead, and Ashmere's gold is safe in your pack. The village eats, and the mountain is quiet at last.",
+        "Cindermawl is dead, and Ashmere's gold is safe in your pack. The village eats, and the mountain is quiet at last.",
         "You hand the old sword back to the mayor to hang back in the town hall."
       ];
     } else if (state.dragonSlain) {
       endingTitle = "Hollow Victory";
       endingLines = [
-        "Vharoth is dead, but you left its gold buried under the corpse. Ashmere still needs " + (RANSOM - state.gold) + " more gold before the snow comes.",
+        "Cindermawl is dead, but you left its gold buried under the corpse. Ashmere still needs " + (RANSOM - state.gold) + " more gold before the snow comes.",
         "You hand the old sword back to the mayor. Recovering it, however, does not fill the village's grain stores."
       ];
     } else if (state.gold >= RANSOM) {
       endingTitle = "Master Treasure Hunter";
       endingLines = [
         "You carry " + state.gold + " gold down the mountainside. Ashmere will buy grain and survive the winter.",
-        "But Vharoth still lives, and on quiet, dark nights the whole village watches the fiery mountain."
+        "But Cindermawl still lives, and on quiet, dark nights the whole village watches the fiery mountain."
       ];
     } else {
       endingTitle = "Empty Hands";
@@ -782,13 +907,18 @@ startGame();
    The prologue is not part of the cave, so it has no map node.
    ------------------------------------------------------------ */
 const MAP_ROOMS = {
-  entrance:      { label: "Cave Entrance",      area: "entrance" },
-  leftTunnel:    { label: "Left Tunnel",         area: "left" },
-  armory:        { label: "Abandoned Armory",    area: "armory" },
-  rightTunnel:   { label: "Right Tunnel",        area: "right" },
-  river:         { label: "Underground River",   area: "river" },
-  dragonChamber: { label: "Dragon's Lair",       area: "dragon" },
-  escapeExit:    { label: "Cave Exit",           area: "exit" }
+  armory:         { label: "Abandoned Armory",    area: "armory" },
+  skeletonAlcove: { label: "Skeleton Alcove",     area: "skeleton" },
+  stoneDeadEnd:   { label: "Stone Dead End",      area: "stoneEnd" },
+  echoCorridor:   { label: "Echo Corridor",       area: "echo" },
+  leftTunnel:     { label: "Left Tunnel",         area: "left" },
+  entrance:       { label: "Cave Entrance",       area: "entrance" },
+  rightTunnel:    { label: "Right Tunnel",        area: "right" },
+  lowPassage:     { label: "Low Passage",         area: "low" },
+  riverDeadEnd:   { label: "River Dead End",      area: "riverEnd" },
+  river:          { label: "Underground River",   area: "river" },
+  dragonChamber:  { label: "Dragon's Lair",       area: "dragon" },
+  escapeExit:     { label: "Cave Exit",           area: "exit" }
 };
 
 function renderMap() {

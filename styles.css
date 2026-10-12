@@ -299,7 +299,7 @@ body {
 
 .map-panel {
   width: 100%;
-  max-width: 480px;
+  max-width: 760px;
   background: var(--stone);
   border: 2px solid var(--gold);
   border-radius: 10px;
@@ -334,13 +334,14 @@ body {
 
 .map-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   grid-template-areas:
-    "armory  .         ."
-    "left    entrance  right"
-    ".       .         river"
-    ".       .         dragon"
-    ".       .         exit";
+    "armory  skeleton  echo      stoneEnd  ."
+    ".       .         left      entrance  right"
+    ".       .         .         .         low"
+    "riverEnd .         .         .         river"
+    ".       .         .         .         dragon"
+    ".       .         .         .         exit";
   gap: 8px;
 }
 
