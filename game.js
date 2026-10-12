@@ -22,7 +22,6 @@ const inventoryEl = document.getElementById("stat-inventory");
 const questEl     = document.getElementById("quest");
 const storyEl     = document.getElementById("story");
 const choicesEl   = document.getElementById("choices");
-const bestScoreEl = document.getElementById("best-score");
 const restartBtn  = document.getElementById("restart-button");
 const mapButton   = document.getElementById("map-button");
 const mapOverlay  = document.getElementById("map-overlay");
@@ -804,7 +803,6 @@ function render() {
   healthEl.textContent = "\u2764\uFE0F Health: " + state.health;
   goldEl.textContent = "\uD83E\uDE99 Gold: " + state.gold;
   inventoryEl.textContent = "\uD83C\uDF92 Inventory: " + state.inventory.join(", ");
-  bestScoreEl.textContent = "Best gold: " + getBestGold();
 
   // --- Objective (hidden during the prologue and the endings) ---
   if (state.gameOver || state.currentRoom === "prologue") {

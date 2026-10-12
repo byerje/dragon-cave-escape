@@ -249,10 +249,6 @@ body {
     gap: 10px;
   }
 
-  #best-score {
-    text-align: center;
-  }
-
   .footer-buttons {
     width: 100%;
     display: grid;
