@@ -28,6 +28,11 @@ const mapButton   = document.getElementById("map-button");
 const mapOverlay  = document.getElementById("map-overlay");
 const mapGridEl   = document.getElementById("map-grid");
 const mapCloseBtn = document.getElementById("map-close");
+const endingOverlay = document.getElementById("ending-overlay");
+const endingVisual = document.getElementById("ending-visual");
+const endingModalTitle = document.getElementById("ending-modal-title");
+const endingModalMessage = document.getElementById("ending-modal-message");
+const endingCloseBtn = document.getElementById("ending-close");
 const speechButton = document.getElementById("speech-button");
 const voiceSelect = document.getElementById("voice-select");
 
@@ -197,10 +202,10 @@ const rooms = {
     text: function () {
       return [
         "Three nights ago the dragon Cindermawl came down on the village of Ashmere.",
-        "Cindermawl did not eat anyone, but he did something worse: he took the Village's winter stores - the chest containing every coin the village had saved to buy grain - and dragged them up the mountain. Without that gold, Ashmere will starve before spring.",
-        "The village had one old sword, kept above the hearth at City Hall. The blacksmith carried it up the mountain in search of Cindermawl. But, sadly, he never returned.",
-        "So you went up the mountain to the cave opening. As you entered the dragon's cave, something struck you from behind in the dark rendering you unconscious.",
-        "Now you are awake, dazed, and confused about what to do next. If you don't die, then there are only two possible ways to end this: leave with the gold, or leave with the dragon dead."
+        "Cindermawl did not eat anyone, but he did something just as bad: he took the Village's winter stores - the chest containing every gold coin the villagers had saved to buy grain - and dragged it up the mountain to it's lair. Without the town's gold, Ashmere's villagers will starve before spring.",
+        "The peace loving village had no weapons only one old sword, kept above the hearth at City Hall. A year ago, the blacksmith carried it up the mountain in search of Cindermawl. But, sadly, he never returned.",
+        "So you decided to go up the mountain to the cave opening to try to save the village's gold and all the villagers. As you entered the dragon's cave, you fell down a cavern in the dark rendering you unconscious.",
+        "Now you are awake, dazed, and confused about what to do next since you can't get back up the way you came. If you don't die, then your goal is to leave with the gold, to leave with the dragon dead, or hopefully both."
       ];
     },
     choices: function () {
@@ -646,17 +651,21 @@ const rooms = {
    ------------------------------------------------------------ */
 let endingTitle = "";
 let endingLines = [];
+let endingOutcome = "";
 
 function endGame(kind) {
   state.gameOver = true;
 
   if (kind === "burned") {
+    endingOutcome = "death";
     endingTitle = "Burned";
     endingLines = ["The dragon's flames consume you. Ashmere waits for a rescuer who never returns down the mountain."];
   } else if (kind === "eaten") {
+    endingOutcome = "death";
     endingTitle = "Eaten";
     endingLines = ["The dragon devours you in a single, unhurried motion, then goes back to sleep on your village's gold."];
   } else if (kind === "gaveUp") {
+    endingOutcome = "death";
     endingTitle = "Coward's Rest";
     endingLines = ["You lie still until the cold seeps through your bones. In the shadow of the mountain, Ashmere waits for a rescuer who will never return."];
   } else {
@@ -664,6 +673,7 @@ function endGame(kind) {
     // Order matters: the rarest ending is checked first.
     // Killing the dragon AND securing the gold are both required to truly win.
     if (state.dragonSlain && state.gold >= RANSOM && state.stoleGold) {
+      endingOutcome = "victory";
       endingTitle = "King of Dragons";
       endingLines = [
         "You walk into Ashmere with the winter gold on your back and Cindermawl's blood on the blacksmith's blade.",
@@ -700,6 +710,27 @@ function endGame(kind) {
   }
 
   render();
+  showEndingOverlay();
+}
+
+function showEndingOverlay() {
+  if (!endingOutcome) return;
+
+  const won = endingOutcome === "victory";
+  endingOverlay.hidden = false;
+  endingVisual.className = "ending-visual " + endingOutcome;
+  endingVisual.innerHTML = won
+    ? '<span class="firework firework-one"></span><span class="firework firework-two"></span><span class="firework firework-three"></span>'
+    : "&#9760;";
+  endingModalTitle.textContent = won ? "Victory!" : "You Have Fallen";
+  endingModalMessage.textContent = won
+    ? "Ashmere is safe. Cindermawl will trouble no one again."
+    : "Your adventure ends in the darkness beneath the mountain.";
+  endingCloseBtn.focus();
+}
+
+function closeEndingOverlay() {
+  endingOverlay.hidden = true;
 }
 
 
@@ -891,10 +922,13 @@ function startGame() {
   messages = [];
   endingTitle = "";
   endingLines = [];
+  endingOutcome = "";
+  closeEndingOverlay();
   render();
 }
 
 restartBtn.addEventListener("click", startGame);
+endingCloseBtn.addEventListener("click", closeEndingOverlay);
 
 // Kick everything off.
 startGame();

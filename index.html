@@ -61,6 +61,16 @@
     </div>
   </div>
 
+  <!-- ===== End-game result overlay ===== -->
+  <div class="ending-overlay" id="ending-overlay" hidden>
+    <section class="ending-modal" role="dialog" aria-modal="true" aria-labelledby="ending-modal-title">
+      <div class="ending-visual" id="ending-visual" aria-hidden="true"></div>
+      <h2 id="ending-modal-title"></h2>
+      <p id="ending-modal-message"></p>
+      <button id="ending-close" class="restart-button">Continue</button>
+    </section>
+  </div>
+
   <!-- Narrative content loads before game logic so the renderer can use it. -->
   <script src="story-content.js"></script>
   <script src="game.js"></script>
