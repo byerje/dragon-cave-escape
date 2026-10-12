@@ -680,18 +680,21 @@ function endGame(kind) {
         "The village eats. The mountain is quiet. They will sing about this for a hundred years, and none of it will be exaggerated."
       ];
     } else if (state.dragonSlain && state.gold >= RANSOM) {
+      endingOutcome = "victory";
       endingTitle = "Dragon Slayer";
       endingLines = [
         "Cindermawl is dead, and Ashmere's gold is safe in your pack. The village eats, and the mountain is quiet at last.",
         "You hand the old sword back to the mayor to hang back in the town hall."
       ];
     } else if (state.dragonSlain) {
+      endingOutcome = "victory";
       endingTitle = "Hollow Victory";
       endingLines = [
         "Cindermawl is dead, but you left its gold buried under the corpse. Ashmere still needs " + (RANSOM - state.gold) + " more gold before the snow comes.",
         "You hand the old sword back to the mayor. Recovering it, however, does not fill the village's grain stores."
       ];
     } else if (state.gold >= RANSOM) {
+      endingOutcome = "victory";
       endingTitle = "Master Treasure Hunter";
       endingLines = [
         "You carry " + state.gold + " gold down the mountainside. Ashmere will buy grain and survive the winter.",

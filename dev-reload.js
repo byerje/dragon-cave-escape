@@ -10,7 +10,8 @@
    ============================================================ */
 (function () {
   const isLocal = ["localhost", "127.0.0.1"].includes(window.location.hostname);
-  if (!isLocal) return;
+  const reloadEnabled = new URLSearchParams(window.location.search).get("devReload") === "1";
+  if (!isLocal || !reloadEnabled) return;
 
   const WATCHED_FILES = ["index.html", "styles.css", "game.js"];
   const POLL_INTERVAL_MS = 1000;
